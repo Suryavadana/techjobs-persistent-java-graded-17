@@ -22,17 +22,17 @@ import java.util.List;
  * Created by LaunchCode
  */
 @Controller
-@RequestMapping(value = "list")
+@RequestMapping(value ="list")
 public class ListController {
 
     @Autowired
-    private JobRepository jobRepository;
-
-    @Autowired
-    private EmployerRepository employerRepository;
+    private  JobRepository jobRepository;
 
     @Autowired
     private SkillRepository skillRepository;
+
+    @Autowired
+    private EmployerRepository employerRepository;
 
     static HashMap<String, String> columnChoices = new HashMap<>();
 
@@ -41,16 +41,17 @@ public class ListController {
         columnChoices.put("all", "All");
         columnChoices.put("employer", "Employer");
         columnChoices.put("skill", "Skill");
+        //columnChoices.put("job","Job");
 
     }
 
     @RequestMapping("")
     public String list(Model model) {
+
         model.addAttribute("title", "All Jobs");
-        model.addAttribute("jobs", jobRepository.findAll());
+        //  model.addAttribute("jobs", jobRepository.findAll());
         model.addAttribute("employers", employerRepository.findAll());
         model.addAttribute("skills", skillRepository.findAll());
-
         return "list";
     }
 
@@ -68,7 +69,8 @@ public class ListController {
 
         return "list-jobs";
     }
-    @GetMapping("list")
+
+    // @GetMapping("")
     public String displayList(Model model) {
         // Add employer and skill data to the model if they exist
 
@@ -77,18 +79,19 @@ public class ListController {
 
 
 
-        // Check if skills list is not null and not empty before adding to the model
-        if (skills != null && !skills.isEmpty()) {
-            model.addAttribute("skills", skills);
-        }
+//        // Check if skills list is not null and not empty before adding to the model
+//        if (skills != null && !skills.isEmpty()) {
+        model.addAttribute("skills", skills);
+//        }
+//
+//        // Check if employers list is not null and not empty before adding to the model
+//        if (employers != null && !employers.isEmpty()) {
+        model.addAttribute("employers", employers);
+//        }
 
-        // Check if employers list is not null and not empty before adding to the model
-        if (employers != null && !employers.isEmpty()) {
-            model.addAttribute("employers", employers);
-        }
+
 
         return "list/index"; // Assuming the view template is located at list/index.html
     }
-
 
 }

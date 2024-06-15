@@ -1,7 +1,6 @@
 package org.launchcode.techjobs.persistent.controllers;
 
 import jakarta.validation.Valid;
-import org.launchcode.techjobs.persistent.models.Employer;
 import org.launchcode.techjobs.persistent.models.Skill;
 import org.launchcode.techjobs.persistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,54 +13,53 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("skill")
+@RequestMapping("skills")
 public class SkillController {
-
     @Autowired
     private SkillRepository skillRepository;
 
-    //Handler to display new skills
     @GetMapping("add")
     public String displayAddSkillForm(Model model) {
-        model.addAttribute(new Skill());
+        model.addAttribute("skill",new Skill());
         return "skills/add";
     }
 
-    // Handler to process the form for adding a new employer
     @PostMapping("add")
     public String processAddSkillForm(@ModelAttribute @Valid Skill newSkill,
-                                         Errors errors, Model model) {
+                                      Errors errors, Model model) {
 
         if (errors.hasErrors()) {
             return "skills/add";
         }
 
-        skillRepository.save(newSkill); // Saving new skill using the repository
-        return "redirect:";
+        //save the valid skill obj to the skill Repository.
+        skillRepository.save(newSkill);
+
+        return "redirect:/skills/";
+    }
+    @GetMapping("/")
+    //@RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index(Model model){
+        List<Skill> skills = (List<Skill>) skillRepository.findAll();  //fetch all skills from db
+        model.addAttribute("skills", skills);  //Add skills list to the model
+        return "skills/index"; //returns skills/index.html (thymeleaf)
     }
 
-    // Handler to display details of an individual skill
+
+
     @GetMapping("view/{skillId}")
     public String displayViewSkill(Model model, @PathVariable int skillId) {
-        Optional<Skill> optSkill = skillRepository.findById(skillId); // Retrieve skill by ID
-        if (optSkill.isPresent( )) {
-            Skill skill = optSkill.get( );
+
+        // Optional optEmployer = null; // remove null and replace using findById()
+        Optional<Skill> optSkill = skillRepository.findById(skillId); //Retrieves employer by id.
+        if (optSkill.isPresent()) {
+            Skill skill = optSkill.get();
             model.addAttribute("skill", skill);
             return "skills/view";
         } else {
-            // Handle case where skill is not found
-            return "redirect:/skill";
+            return "redirect:/skills/";
         }
 
-    }
-
-    // Handler to display a list of all employers
-    @GetMapping("")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(Model model) {
-        List<Skill> skills = (List<Skill>) skillRepository.findAll();
-        model.addAttribute("skills",skills); // Passing employers list to the view
-        return "skills/index";
     }
 
 }

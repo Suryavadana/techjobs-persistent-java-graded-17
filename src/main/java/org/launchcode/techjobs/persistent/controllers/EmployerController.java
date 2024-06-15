@@ -13,58 +13,53 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("employers")
-//@RequestMapping("/")
+@RequestMapping("/employers")
 public class EmployerController {
 
     @Autowired
     private EmployerRepository employerRepository;
 
-
-    // Handler to display form for adding a new employer
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
         model.addAttribute(new Employer());
         return "employers/add";
     }
 
-    // Handler to process the form for adding a new employer
     @PostMapping("add")
     public String processAddEmployerForm(@ModelAttribute @Valid Employer newEmployer,
-                                    Errors errors, Model model) {
+                                         Errors errors, Model model) {
 
         if (errors.hasErrors()) {
             return "employers/add";
         }
 
-        // Save the valid Employer object using the employerRepository
+        //save the valid employer obj to the Employer Repository.
         employerRepository.save(newEmployer);
 
-        return "redirect:";
+        return "redirect:/employers/";
+    }
+    @GetMapping("/")
+    //@RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index(Model model){
+        List<Employer> employers = (List<Employer>) employerRepository.findAll();  //fetch all employers from db
+        model.addAttribute("employers", employers);  //Add employers list to the model
+        return "employers/index"; //returns employers/index.html (thymeleaf)
     }
 
-    // Handler to display a list of all employers
-    @GetMapping("")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String index(Model model) {
-        List<Employer> employers = (List<Employer>) employerRepository.findAll();
-        model.addAttribute("employers", employers); // Passing employers list to the view
-        return "employers/index";
-    }
+
 
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
 
-       // Optional optEmployer = null;
-        Optional<Employer> optEmployer = employerRepository.findById(employerId); // Retrieve employer by ID
+        // Optional optEmployer = null; // remove null and replace using findById()
+        Optional<Employer> optEmployer = employerRepository.findById(employerId); //Retrieves employer by id.
         if (optEmployer.isPresent()) {
-            Employer employer = (Employer) optEmployer.get();
+            Employer employer = optEmployer.get();
             model.addAttribute("employer", employer);
-            return "employer/view";
+            return "employers/view";
         } else {
-            return "redirect:/employer";
+            return "redirect:/employers/";
         }
-
 
     }
 }

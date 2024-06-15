@@ -20,13 +20,12 @@ import static org.launchcode.techjobs.persistent.controllers.ListController.colu
 public class SearchController {
 
     @Autowired
-    private JobRepository jobRepository;
-
-    @Autowired
     private EmployerRepository employerRepository;
 
     @Autowired
     private SkillRepository skillRepository;
+    @Autowired
+    private JobRepository jobRepository;
 
     @RequestMapping("")
     public String search(Model model) {

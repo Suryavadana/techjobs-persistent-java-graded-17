@@ -4,34 +4,34 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 public class Employer extends AbstractEntity {
 
-    @NotNull
-    @NotEmpty(message = "location cannot be empty.")
-    @Size(min=2, max=100 , message = "location must be between 2 and 100 characters")
-    private String location;
+    @NotBlank (message = "Location cannot be blank.")
+    @Size(min=1, max = 100 , message = "Location must be between 1 and 100 characters long.")
+    public String location;
 
-    @OneToMany//(mappedBy = "employer")
-   @JoinColumn(name = "employer_id")
+    @OneToMany
+    @JoinColumn(name = "employer_id")
     private List<Job> jobs = new ArrayList<>();
-    // No-arg constructor required by Hibernate
 
-    public Employer() {
-    }
+    //default constructor
+    public Employer(){}
 
-    public Employer(String location) {
+    //constructor with location parameter
+
+
+    public Employer(String location, List<Job> jobs) {
         this.location = location;
+        this.jobs = jobs;
     }
 
+    //getters and setters(Accessor Methods)
     public String getLocation() {
         return location;
     }
